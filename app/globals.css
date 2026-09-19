@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #FAFAF8;
+  --foreground: #1C1815;
+  --gold-primary: #C5A059;
+  --gold-metallic: #D4AF37;
+  --gold-dark: #8C6D37;
+  --gold-light: #FAF5EB;
+  --charcoal: #1C1815;
+  --charcoal-card: #24201C;
+  --warm-gray: #F4F3EF;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-gold: #C5A059;
+  --color-gold-metallic: #D4AF37;
+  --color-gold-dark: #8C6D37;
+  --color-gold-light: #FAF5EB;
+  --color-gold-border: rgba(197, 160, 89, 0.3);
+  --color-marble: #FAFAF8;
+  --color-charcoal: #1C1815;
+  --color-charcoal-dark: #14110F;
+  --color-warm-gray: #F4F3EF;
+  --color-warm-text: #36302B;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Widescreen Full-Width Container Utility */
+.site-container {
+  width: 100%;
+  max-width: 1920px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem; /* 24px mobile */
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .site-container {
+    padding-left: 2.5rem; /* 40px tablet */
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-container {
+    padding-left: 3.5rem; /* 56px desktop */
+    padding-right: 3.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .site-container {
+    padding-left: 5rem; /* 80px widescreen */
+    padding-right: 5rem;
+  }
+}
+
+/* Subtle elegant custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAFAF8;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D2C5;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+/* Gold Text Accent Utility */
+.text-gold {
+  color: #C5A059;
+}
+
+.text-gold-gradient {
+  background: linear-gradient(135deg, #D4AF37 0%, #C5A059 50%, #9A7B31 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-primary {
+  background-color: #C5A059;
+}
+
+.bg-gold-primary:hover {
+  background-color: #B59049;
+}
+
+.border-gold-subtle {
+  border-color: rgba(197, 160, 89, 0.3);
+}
+
+/* Infinite Marquee Ticker Animation */
+@keyframes marqueeInfinite {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeInfinite 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
