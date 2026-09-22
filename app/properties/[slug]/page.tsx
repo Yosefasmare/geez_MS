@@ -7,10 +7,9 @@ import PropertyOverview from "@/components/properties/slug/PropertyOverview";
 import PropertyContactPanel from "@/components/properties/slug/PropertyContactPanel";
 import PropertyDescription from "@/components/properties/slug/PropertyDescription";
 import PropertyDetails from "@/components/properties/slug/PropertyDetails";
-import PropertyAmenities from "@/components/properties/slug/PropertyAmenities";
 import PropertyLocation from "@/components/properties/slug/PropertyLocation";
 import PropertyCTA from "@/components/properties/slug/PropertyCTA";
-import { getDetailedPropertyBySlug } from "@/app/data/mockProperties";
+import { getPropertyDetail } from "@/lib/actions/properties";
 
 export async function generateMetadata({
   params,
@@ -18,11 +17,18 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const property = getDetailedPropertyBySlug(slug);
+  const result = await getPropertyDetail(slug);
+  const property = result.data;
+
+  if (!property) {
+    return {
+      title: "Property Not Found | GE'EZ Marketing Solution PLC",
+    };
+  }
 
   return {
     title: `${property.title} | GE'EZ Marketing Solution PLC`,
-    description: `Explore details for ${property.title}, a premier ${property.propertyType.toLowerCase()} in ${property.location}. ${property.bedrooms} bedrooms, ${property.bathrooms} bathrooms, ${property.area}.`,
+    description: `Explore details for ${property.title}, a premier ${(property.propertyType || "").toLowerCase()} in ${property.location}. ${property.bedrooms ?? 0} bedrooms, ${property.bathrooms ?? 0} bathrooms, ${property.area || ""}.`,
   };
 }
 
@@ -32,7 +38,30 @@ export default async function PropertyDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const property = getDetailedPropertyBySlug(slug);
+  const result = await getPropertyDetail(slug);
+
+  if (!result.data) {
+    return (
+      <main className="min-h-screen flex flex-col bg-[#FAFAF8] text-[#1C1815]">
+        <Navbar activePage="properties" />
+        <div className="pt-24 flex-1 flex items-center justify-center">
+          <div className="text-center space-y-4 py-20 px-4">
+            <h1 className="text-3xl font-bold text-stone-800">Property Not Found</h1>
+            <p className="text-stone-500">The requested property listing could not be found.</p>
+          </div>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
+  const property = result.data;
+
+
+  const serializedImages = property?.images?.map((img) => ({
+  ...img,
+  createdAt: img.createdAt ? String(img.createdAt) : null, // Convert Temporal.Instant to string
+}));
 
   return (
     <main className="min-h-screen flex flex-col bg-[#FAFAF8] text-[#1C1815]">
@@ -49,7 +78,7 @@ export default async function PropertyDetailPage({
       <PropertyHeader property={property} />
 
       {/* 4. PROPERTY IMAGE GALLERY */}
-      <PropertyGallery images={property.images} title={property.title} />
+      <PropertyGallery images={serializedImages} title={property.title} />
 
       {/* 5. PROPERTY INFORMATION + CONTACT PANEL (2 COLUMNS) */}
       <section className="py-12 bg-white flex-1 border-t border-b border-stone-200/70">
@@ -68,21 +97,15 @@ export default async function PropertyDetailPage({
               <PropertyDetails property={property} />
 
               {/* 8. FEATURES / AMENITIES */}
-              <PropertyAmenities amenities={property.amenities} />
 
               {/* 9. LOCATION */}
-              <PropertyLocation
-                location={property.location}
-                neighborhood={property.neighborhood}
-                city={property.city}
-                nearbyPoints={property.nearbyPoints}
-              />
+              <PropertyLocation location={property.location} />
             </div>
 
             {/* RIGHT COLUMN (4 cols on desktop): Contact Panel */}
             <div className="lg:col-span-4">
               {/* 5. CONTACT PANEL */}
-              <PropertyContactPanel property={property} />
+              <PropertyContactPanel propertyID={property.id} propertyTitle={property.title} />
             </div>
 
           </div>
@@ -90,7 +113,7 @@ export default async function PropertyDetailPage({
       </section>
 
       {/* 10. CONTACT CTA */}
-      <PropertyCTA propertyTitle={property.title} propertyId={property.propertyId} />
+      <PropertyCTA propertyTitle={property.title} propertyId={property.id} />
 
       {/* 11. FOOTER */}
       <Footer />

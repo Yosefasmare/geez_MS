@@ -1,32 +1,43 @@
-"use client";
 
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+interface PaginationProps {
+  propertyCount: number;
+  currentPage: number
+}
 
-export default function Pagination() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 4;
+export default function Pagination({propertyCount,currentPage}: PaginationProps) {
+  const totalPages = Math.ceil(propertyCount / 12);
+  console.log(totalPages)
 
   return (
     <div className="flex items-center justify-center gap-2 pt-12 pb-4">
       {/* Previous Button */}
-      <button
-        type="button"
-        disabled={currentPage === 1}
-        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      {currentPage > 1 ? (
+      <Link
+        href={`/properties?page=${currentPage - 1}`}
+        className="inline-flex items-center gap-1 px-3.5 py-2 rounded text-xs font-semibold text-[#1C1815] bg-white border border-stone-300 hover:border-[#C5A059] disabled:opacity-40 disabled:hover:border-stone-300 transition-all cursor-pointer"
+      >
+        <ChevronLeft className="w-4 h-4" />
+        <span className="hidden sm:inline">Previous</span>
+      </Link>
+      ) : (
+        <button
+        disabled
         className="inline-flex items-center gap-1 px-3.5 py-2 rounded text-xs font-semibold text-[#1C1815] bg-white border border-stone-300 hover:border-[#C5A059] disabled:opacity-40 disabled:hover:border-stone-300 transition-all cursor-pointer"
       >
         <ChevronLeft className="w-4 h-4" />
         <span className="hidden sm:inline">Previous</span>
       </button>
 
+      )}
+
       {/* Page Numbers */}
       <div className="flex items-center gap-1.5">
-        {[1, 2, 3, 4].map((page) => (
-          <button
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+          <Link
             key={page}
-            type="button"
-            onClick={() => setCurrentPage(page)}
+            href={`/properties?page=${page}`}
             className={`w-9 h-9 rounded text-xs font-bold transition-all cursor-pointer ${
               currentPage === page
                 ? "bg-[#C5A059] text-white shadow-2xs"
@@ -34,20 +45,29 @@ export default function Pagination() {
             }`}
           >
             {page}
-          </button>
+          </Link>
         ))}
       </div>
 
       {/* Next Button */}
-      <button
+      {currentPage === totalPages ? (
+        <button
         type="button"
         disabled={currentPage === totalPages}
-        onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
         className="inline-flex items-center gap-1 px-3.5 py-2 rounded text-xs font-semibold text-[#1C1815] bg-white border border-stone-300 hover:border-[#C5A059] disabled:opacity-40 disabled:hover:border-stone-300 transition-all cursor-pointer"
       >
         <span className="hidden sm:inline">Next</span>
         <ChevronRight className="w-4 h-4" />
       </button>
+      ) : (
+        <Link
+        href={`/properties?page=${currentPage + 1}`}
+        className="inline-flex items-center gap-1 px-3.5 py-2 rounded text-xs font-semibold text-[#1C1815] bg-white border border-stone-300 hover:border-[#C5A059] disabled:opacity-40 disabled:hover:border-stone-300 transition-all cursor-pointer"
+      >
+        <span className="hidden sm:inline">Next</span>
+        <ChevronRight className="w-4 h-4" />
+      </Link>
+      )}
     </div>
   );
 }

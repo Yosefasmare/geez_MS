@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, Calendar, Clock, CheckCircle2, User, Phone, Mail } from "lucide-react";
+import { X, CheckCircle2, User, Phone, Mail, Loader2 } from "lucide-react";
+import { sendInquiry } from "@/lib/actions/inquiry";
 
 interface ViewingModalProps {
   isOpen: boolean;
@@ -17,24 +18,39 @@ export default function ViewingModal({
   propertyId,
 }: ViewingModalProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
-    preferredDate: "",
-    preferredTime: "Morning (9am - 12pm)",
-    notes: "",
+    message: "",
+    propertyId,
+    type: 'PROPERTY' as "GENERAL" | "PROPERTY"
   });
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      console.log(formData);
+      const result = await sendInquiry(formData);
+
+      if(result.success){
+        setSubmitted(true);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
     setSubmitted(false);
+    setIsSubmitting(false);
     onClose();
   };
 
@@ -93,6 +109,7 @@ export default function ViewingModal({
                       required
                       placeholder="+251 911 000 000"
                       value={formData.phone}
+                      maxLength={13}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full pl-9 pr-3 py-2 text-sm bg-stone-50 border border-stone-300 rounded focus:outline-none focus:border-[#C5A059]"
                     />
@@ -116,40 +133,7 @@ export default function ViewingModal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Preferred Date
-                  </label>
-                  <div className="relative">
-                    <Calendar className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-                    <input
-                      type="date"
-                      value={formData.preferredDate}
-                      onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2 text-sm bg-stone-50 border border-stone-300 rounded focus:outline-none focus:border-[#C5A059]"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-stone-700 mb-1">
-                    Preferred Time Window
-                  </label>
-                  <div className="relative">
-                    <Clock className="w-4 h-4 text-stone-400 absolute left-3 top-3" />
-                    <select
-                      value={formData.preferredTime}
-                      onChange={(e) => setFormData({ ...formData, preferredTime: e.target.value })}
-                      className="w-full pl-9 pr-3 py-2 text-sm bg-stone-50 border border-stone-300 rounded focus:outline-none focus:border-[#C5A059]"
-                    >
-                      <option>Morning (9am - 12pm)</option>
-                      <option>Afternoon (1pm - 4pm)</option>
-                      <option>Late Afternoon (4pm - 6pm)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
+              
 
               <div>
                 <label className="block text-xs font-semibold text-stone-700 mb-1">
@@ -158,8 +142,8 @@ export default function ViewingModal({
                 <textarea
                   rows={2}
                   placeholder="Mention any specific requirements..."
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   className="w-full p-2.5 text-sm bg-stone-50 border border-stone-300 rounded focus:outline-none focus:border-[#C5A059]"
                 />
               </div>
@@ -169,15 +153,24 @@ export default function ViewingModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-900"
+                disabled={isSubmitting}
+                className="px-4 py-2 text-xs font-semibold text-stone-600 hover:text-stone-900 disabled:opacity-50"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-[#C5A059] hover:bg-[#B59049] text-white text-xs font-bold rounded shadow-xs transition-colors"
+                disabled={isSubmitting}
+                className="px-6 py-2.5 bg-[#C5A059] hover:bg-[#B59049] disabled:opacity-70 disabled:cursor-not-allowed text-white text-xs font-bold rounded shadow-xs transition-colors inline-flex items-center gap-2"
               >
-                Request Viewing Appointment
+                {isSubmitting ? (
+                  <>
+                    <span>Requesting...</span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  </>
+                ) : (
+                  <span>Request Viewing Appointment</span>
+                )}
               </button>
             </div>
           </form>

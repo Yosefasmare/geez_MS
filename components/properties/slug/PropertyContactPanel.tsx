@@ -2,24 +2,23 @@
 
 import { useState } from "react";
 import { Phone, Mail, Calendar, ArrowRight, ShieldCheck, Clock } from "lucide-react";
-import { DetailedProperty } from "@/app/data/mockProperties";
 import ViewingModal from "./ViewingModal";
+import Link from "next/link";
 
-interface PropertyContactPanelProps {
-  property: DetailedProperty;
+interface ContactProps {
+  propertyID: string;
+  propertyTitle: string
 }
 
-export default function PropertyContactPanel({ property }: PropertyContactPanelProps) {
+
+export default function PropertyContactPanel( {propertyID,propertyTitle}: ContactProps ) {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleContactUs = () => {
-    const contactSection = document.getElementById("contact-cta") || document.getElementById("contact");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = `mailto:${property.contactInfo.email}?subject=Inquiry regarding ${property.title} (${property.propertyId})`;
-    }
-  };
+  const email = "yeabsirakebede720@gmail.com";
+  const phone1 = "+251 941 912 041";
+  const phone2 = "+251 929 018 171";
+
+
 
   return (
     <>
@@ -45,18 +44,17 @@ export default function PropertyContactPanel({ property }: PropertyContactPanelP
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-md text-sm font-semibold text-white bg-[#C5A059] hover:bg-[#B59049] transition-all duration-200 shadow-xs group cursor-pointer"
           >
             <Calendar className="w-4 h-4" />
-            <span>Schedule a Viewing</span>
+            <span>Send Inquiry </span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
           </button>
 
-          <button
-            type="button"
-            onClick={handleContactUs}
+          <Link
+            href={`tel:${phone2.replace(/\s+/g, '')}`}
             className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md text-sm font-semibold text-[#1C1815] bg-white border border-stone-300 hover:border-[#C5A059] hover:bg-stone-50 transition-all duration-200 cursor-pointer"
           >
-            <Mail className="w-4 h-4 text-[#C5A059]" />
-            <span>Contact Us</span>
-          </button>
+            <Phone className="w-4 h-4 text-[#C5A059]" />
+            <span>Call Us <span className="text-stone-500 font-semibold ms-3 text-xs">+251 929 018 171</span></span>
+          </Link>
         </div>
 
         {/* Direct Contact Info */}
@@ -68,19 +66,19 @@ export default function PropertyContactPanel({ property }: PropertyContactPanelP
           <div className="flex items-start gap-3 text-stone-700">
             <Phone className="w-4 h-4 text-[#C5A059] shrink-0 mt-0.5" />
             <div>
-              <a href="tel:+251941912041" className="font-semibold hover:text-[#C5A059] block">
-                {property.contactInfo.phone1}
+              <a href={`tel:${phone1.replace(/\s+/g, '')}`} className="font-semibold hover:text-[#C5A059] block">
+                {phone1}
               </a>
-              <a href="tel:+251929018171" className="text-stone-500 hover:text-[#C5A059] block text-xs mt-0.5">
-                {property.contactInfo.phone2}
+              <a href={`tel:${phone2.replace(/\s+/g, '')}`} className="text-stone-500 font-semibold hover:text-[#C5A059] block">
+                {phone2}
               </a>
             </div>
           </div>
 
           <div className="flex items-center gap-3 text-stone-700">
             <Mail className="w-4 h-4 text-[#C5A059] shrink-0" />
-            <a href={`mailto:${property.contactInfo.email}`} className="font-medium hover:text-[#C5A059] truncate text-xs">
-              {property.contactInfo.email}
+            <a href={`mailto:${email}`} className="font-medium hover:text-[#C5A059] truncate text-xs">
+              {email}
             </a>
           </div>
 
@@ -101,8 +99,8 @@ export default function PropertyContactPanel({ property }: PropertyContactPanelP
       <ViewingModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        propertyTitle={property.title}
-        propertyId={property.propertyId}
+        propertyTitle={propertyTitle}
+        propertyId={propertyID}
       />
     </>
   );

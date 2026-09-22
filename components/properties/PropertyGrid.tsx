@@ -1,5 +1,5 @@
+import { Property } from "@/lib/types";
 import PropertyCard from "./PropertyCard";
-import { Property } from "@/app/data/mockProperties";
 
 interface PropertyGridProps {
   properties: Property[];

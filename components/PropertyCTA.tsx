@@ -20,7 +20,7 @@ export default function PropertyCTA() {
 
           {/* Supporting Paragraph */}
           <p className="text-base sm:text-lg text-stone-300 font-normal leading-relaxed max-w-3xl mx-auto">
-            Whether you are seeking a luxury penthouse in Bole, a modern family villa in CMC, or high-yield commercial space, our expert team at GE'EZ Marketing Solution PLC is ready to assist you.
+            Whether you are seeking a luxury penthouse in Bole, a modern family villa in CMC, or high-yield commercial space, our expert team at GE&apos;EZ Marketing Solution PLC is ready to assist you.
           </p>
 
           {/* CTAs */}
@@ -34,7 +34,7 @@ export default function PropertyCTA() {
             </Link>
 
             <Link
-              href="/#contact"
+              href="/contact"
               className="w-full sm:w-auto inline-flex items-center justify-center px-9 py-4 rounded-md text-sm font-semibold text-white bg-stone-900 border border-stone-700 hover:border-[#C5A059] hover:bg-stone-800 transition-all duration-200"
             >
               <PhoneCall className="mr-2 w-4 h-4 text-[#C5A059]" />

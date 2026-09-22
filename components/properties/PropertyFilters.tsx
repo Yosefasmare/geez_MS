@@ -2,13 +2,34 @@
 
 import { useState } from "react";
 import { Search, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function PropertyFilters() {
+  const router = useRouter()
+
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyType, setPropertyType] = useState("All");
   const [listingType, setListingType] = useState("All");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  const handleSearch = () =>{
+    const params = new URLSearchParams()
+
+
+    if(searchTerm !== "") params.set("location",searchTerm);
+    if(propertyType !== "" && propertyType !== "All") params.set("propertyType",propertyType)
+    if(listingType !== "" && listingType !== "All") params.set("listingType",listingType)
+    if(minPrice !== "") params.set("minPrice",minPrice)
+    if(maxPrice !== "") params.set("maxPrice",maxPrice)
+
+    params.set("page","1")
+
+
+    router.push(`/properties?${params.toString()}`)
+
+ 
+  }
 
   const handleReset = () => {
     setSearchTerm("");
@@ -90,8 +111,8 @@ export default function PropertyFilters() {
                 className="w-full px-3.5 py-2.5 rounded bg-white border border-stone-300 text-sm text-[#1C1815] focus:outline-none focus:border-[#C5A059] focus:ring-1 focus:ring-[#C5A059] transition-all cursor-pointer"
               >
                 <option value="All">All Listings</option>
-                <option value="For Sale">For Sale</option>
-                <option value="For Rent">For Rent</option>
+                <option value="Sale">For Sale</option>
+                <option value="Rent">For Rent</option>
               </select>
             </div>
 
@@ -127,6 +148,7 @@ export default function PropertyFilters() {
             <div className="lg:col-span-2">
               <button
                 type="button"
+                onClick={()=>handleSearch()}
                 className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded text-sm font-semibold text-white bg-[#C5A059] hover:bg-[#B59049] transition-all duration-200 shadow-xs cursor-pointer"
               >
                 <span>Search Properties</span>

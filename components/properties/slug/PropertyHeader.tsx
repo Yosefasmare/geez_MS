@@ -1,5 +1,5 @@
+import { DetailedProperty } from "@/lib/types";
 import { MapPin } from "lucide-react";
-import { DetailedProperty } from "@/app/data/mockProperties";
 
 interface PropertyHeaderProps {
   property: DetailedProperty;
@@ -26,7 +26,7 @@ export default function PropertyHeader({ property }: PropertyHeaderProps) {
 
           {/* Property ID */}
           <span className="text-xs font-mono font-medium text-stone-600 bg-stone-100 px-2.5 py-1 rounded border border-stone-200">
-            REF: {property.propertyId}
+            REF: {property.id}
           </span>
         </div>
 
@@ -48,7 +48,7 @@ export default function PropertyHeader({ property }: PropertyHeaderProps) {
               Guide Price
             </span>
             <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#C5A059] tracking-tight">
-              {property.formattedPrice}
+              {property.currency || "ETB"} {property.price ? Number(property.price).toLocaleString() : "N/A"}
             </div>
           </div>
         </div>

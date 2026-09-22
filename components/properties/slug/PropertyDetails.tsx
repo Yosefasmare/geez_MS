@@ -1,4 +1,4 @@
-import { DetailedProperty } from "@/app/data/mockProperties";
+import { DetailedProperty } from "@/lib/types";
 
 interface PropertyDetailsProps {
   property: DetailedProperty;
@@ -9,12 +9,12 @@ export default function PropertyDetails({ property }: PropertyDetailsProps) {
     { label: "Property Type", value: property.propertyType },
     { label: "Listing Type", value: property.listingType },
     { label: "Status", value: property.status },
-    { label: "Bedrooms", value: property.bedrooms },
-    { label: "Bathrooms", value: property.bathrooms },
-    { label: "Total Area", value: property.area },
-    { label: "Floors", value: property.floors },
-    { label: "Year Built", value: property.yearBuilt },
-    { label: "Property ID", value: property.propertyId },
+    { label: "Bedrooms", value: property.bedrooms ?? "N/A" },
+    { label: "Bathrooms", value: property.bathrooms ?? "N/A" },
+    { label: "Total Area", value: property.area ? `${property.area} sq m` : "N/A" },
+    { label: "Floors", value: property.floors ?? "N/A" },
+    { label: "Year Built", value: property.yearBuilt ?? "N/A" },
+    { label: "Property ID", value: property.slug },
   ];
 
   return (

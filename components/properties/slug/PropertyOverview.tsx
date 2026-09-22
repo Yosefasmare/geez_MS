@@ -1,5 +1,5 @@
+import { DetailedProperty } from "@/lib/types";
 import { Bed, Bath, Maximize2, Layers } from "lucide-react";
-import { DetailedProperty } from "@/app/data/mockProperties";
 
 interface PropertyOverviewProps {
   property: DetailedProperty;
@@ -22,7 +22,7 @@ export default function PropertyOverview({ property }: PropertyOverviewProps) {
             </div>
             <div>
               <span className="text-2xl font-bold text-[#1C1815] block leading-none">
-                {property.bedrooms}
+                {property.bedrooms ?? 0}
               </span>
               <span className="text-xs font-medium text-stone-500">Bedrooms</span>
             </div>
@@ -35,7 +35,7 @@ export default function PropertyOverview({ property }: PropertyOverviewProps) {
             </div>
             <div>
               <span className="text-2xl font-bold text-[#1C1815] block leading-none">
-                {property.bathrooms}
+                {property.bathrooms ?? 0}
               </span>
               <span className="text-xs font-medium text-stone-500">Bathrooms</span>
             </div>
@@ -48,7 +48,7 @@ export default function PropertyOverview({ property }: PropertyOverviewProps) {
             </div>
             <div>
               <span className="text-2xl font-bold text-[#1C1815] block leading-none">
-                {property.area}
+                {property.area ? `${property.area} m²` : "N/A"}
               </span>
               <span className="text-xs font-medium text-stone-500">Total Area</span>
             </div>
@@ -61,7 +61,7 @@ export default function PropertyOverview({ property }: PropertyOverviewProps) {
             </div>
             <div>
               <span className="text-2xl font-bold text-[#1C1815] block leading-none">
-                {property.floors}
+                {property.floors ?? 0}
               </span>
               <span className="text-xs font-medium text-stone-500">Floors</span>
             </div>
@@ -103,7 +103,7 @@ export default function PropertyOverview({ property }: PropertyOverviewProps) {
             Property ID
           </span>
           <span className="text-base font-bold font-mono text-[#1C1815] mt-1 block">
-            {property.propertyId}
+            {property.slug}
           </span>
         </div>
       </div>

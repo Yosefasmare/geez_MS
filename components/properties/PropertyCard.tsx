@@ -2,20 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { Bed, Bath, Maximize2, MapPin, ArrowRight } from "lucide-react";
 import PropertyStatus from "./PropertyStatus";
-import { Property } from "@/app/data/mockProperties";
+import { getProperties } from "@/lib/actions/properties";
+import { Property } from "@/lib/types";
 
 interface PropertyCardProps {
   property: Property;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default async function PropertyCard({ property }: PropertyCardProps) {
+
+
+  
   return (
     <div className="bg-white rounded-md border border-stone-200/90 overflow-hidden shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col group">
       {/* 4:3 Image Container */}
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100">
         <Image
-          src={property.image}
-          alt={property.title}
+          src={property.images?.[0]?.secureUrl || "/prop-villa.png"}
+          alt={property.title.length > 25 ? property.title.substring(0,25) : property.title}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
@@ -23,7 +27,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
 
         {/* Top Badges Overlay */}
         <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
-          <PropertyStatus status={property.status} />
+          <PropertyStatus status={property.listingType} />
         </div>
 
         {/* Property Type Badge */}
@@ -51,7 +55,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
           {/* Price */}
           <div className="pt-0.5">
             <span className="text-xl font-extrabold text-[#C5A059] tracking-tight">
-              {property.price}
+             {property.currency} {Number(property.price).toLocaleString()}
             </span>
           </div>
         </div>

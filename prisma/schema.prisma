@@ -1,0 +1,111 @@
+// use prisma-8
+
+enum PropertyType {
+  HOUSE
+  APARTMENT
+  VILLA
+  LAND
+  COMMERCIAL
+  OTHER
+}
+
+enum ListingType {
+  SALE
+  RENT
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  SOLD
+  RENTED
+  RESERVED
+  DRAFT
+}
+
+model Property {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String
+
+  price       Decimal
+  currency    String   @default("ETB")
+
+  location    String
+  propertyType PropertyType
+  listingType  ListingType
+  status       PropertyStatus
+
+  bedrooms    Int?
+  bathrooms   Int?
+  area        Decimal?
+  floors      Int?
+  yearBuilt   Int?
+
+  featured    Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt  temporal.updatedAtString()
+
+  images      PropertyImage[]
+}
+
+//fix to use cloudnier storage 
+
+model PropertyImage {
+  id         String   @id @default(uuid())
+  propertyId String
+  
+  publicId   String
+  secureUrl  String
+  altText     String?
+  isCover     Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+
+  property   Property @relation(
+    fields: [propertyId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@index([propertyId])
+}
+
+model Inquiry {
+  id        String   @id @default(uuid())
+
+  name      String
+  email     String?
+  phone     String
+  subject   String?
+  message   String?
+  type  InquiryType @default(GENERAL)
+
+  status    InquiryStatus @default(NEW)
+
+  propertyId String?
+  property   Property? @relation(
+    fields: [propertyId],
+    references: [id],
+    onDelete: SetNull
+  )
+
+  createdAt DateTime @default(now())
+  updatedAt temporal.updatedAtString()
+
+  @@index([propertyId])
+  @@index([status])
+}
+
+enum InquiryStatus {
+  NEW
+  READ
+  CONTACTED
+  CLOSED
+}
+
+enum InquiryType {
+  GENERAL
+  PROPERTY
+}
